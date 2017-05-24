@@ -286,12 +286,42 @@ http://www-personal.umich.edu/~ladamic/projects/
 ### Transforming Data
 Notes:
 
+install.packages('gridExtra')
+library(gridExtra)
+
+```{r}
+
+
+# define individual plots
+summary(pf$friend_count) 
+
+summary(log10(pf$friend_count))
+
+library(ggplot2)
+p1 = qplot(x = friend_count , data = pf) + geom_histogram(fill = '#FF0000') +
+  scale_x_continuous(limits = c(-250, 1500))
+p2 = qplot(x = log10(friend_count)+1 , data = pf) + geom_histogram(fill = '#00FF00')
+#   scale_x_continuous(limits = c(0.30, 3.75))
+
+p3 = qplot(x = sqrt(friend_count) , data = pf)+ geom_histogram(fill = '#0000FF')+
+  scale_x_continuous(limits = c(-5, 50))
+# arrange plots in grid
+grid.arrange(p1, p2, p3, ncol=1)
+
+
+p1 <- ggplot(aes(x= friend_count), data = pf) + geom_histogram(fill = '#FF5588')
+p2 <- p1 + scale_x_log10()
+p3 <- p1 + scale_x_sqrt()
+grid.arrange(p1, p2, p3, ncol=1)
+```
+
 ***
 
 ### Add a Scaling Layer
 Notes:
 
 ```{r Add a Scaling Layer}
+ggplot(aes(x = friend_count), data = pf) + geom_histogram(fill = '#990088')+ scale_x_log10()
 
 ```
 
@@ -301,7 +331,15 @@ Notes:
 ### Frequency Polygons
 
 ```{r Frequency Polygons}
+ggplot(aes(x = friend_count, y = ..count../sum(..count..)), data = subset(pf, !is.na(gender))) +
+  geom_freqpoly(aes(color = gender), binwidth=10) +
+  scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50)) +
+  xlab('Friend Count') +
+  ylab('Percentage of users with that friend count')
 
+ggplot(aes(x = www_likes), data = subset(pf, !is.na(gender))) +
+  geom_freqpoly(aes(color = gender)) +
+  scale_x_log10()
 ```
 
 ***
@@ -310,6 +348,8 @@ Notes:
 Notes:
 
 ```{r Likes on the Web}
+by(pf$www_likes,pf$gender, sum)
+
 
 ```
 
@@ -320,12 +360,14 @@ Notes:
 Notes:
 
 ```{r Box Plots}
+qplot(x=gender, y =friend_count, data = subset(pf, !is.na(gender)), geom ='boxplot')
 
 ```
 
 #### Adjust the code to focus on users who have friend counts between 0 and 1000.
 
 ```{r}
+qplot(x=gender, y =friend_count, data = subset(pf, !is.na(gender)), geom ='boxplot', ylim = c(0,1000))
 
 ```
 
@@ -335,14 +377,23 @@ Notes:
 Notes:
 
 ```{r Box Plots, Quartiles, and Friendships}
-
+qplot(x=gender, y =friend_count, 
+      data = subset(pf, !is.na(gender)), 
+      geom ='boxplot') + 
+      coord_cartesian(ylim = c(0,250))
+by(pf$friend_count, pf$gender, summary)
 ```
 
 #### On average, who initiated more friendships in our sample: men or women?
-Response:
+Response:females
 #### Write about some ways that you can verify your answer.
 Response:
 ```{r Friend Requests by Gender}
+qplot(x=gender, y =friendships_initiated, 
+      data = subset(pf, !is.na(gender)), 
+      geom ='boxplot') + 
+      coord_cartesian(ylim = c(0,150))
+by(pf$friendships_initiated, pf$gender, summary)
 
 ```
 
@@ -354,15 +405,26 @@ Response:
 Notes:
 
 ```{r Getting Logical}
+summary(pf$mobile_likes)
+
+summary(pf$mobile_likes > 0)
+
+mobile_check_in <- NA
+pf$mobile_check_in <- ifelse(pf$mobile_likes > 0, 1, 0)
+pf$mobile_check_in <- factor(pf$mobile_check_in)
+summary(pf$mobile_check_in)
+
+sum(pf$mobile_check_in==1)/length(pf$mobile_check_in)*100
 
 ```
 
-Response:
+Response: 64.59
 
 ***
 
 ### Analyzing One Variable
 Reflection:
+learnt about various tools for visualization of the data like: qplot, ggplot, scale, facet, boxplot, summary the facebook user data
 
 ***
 
