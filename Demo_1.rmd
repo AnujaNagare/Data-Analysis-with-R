@@ -1,0 +1,143 @@
+# The Gapminder website contains over 500 data sets with information about
+# the world's population. Your task is to download a data set of your choice
+# and create 2-5 plots that make use of the techniques from Lesson 3.
+
+# You might use a simple histogram, a boxplot split over a categorical variable,
+# or a frequency polygon. The choice is yours!
+
+# You can find a link to the Gapminder website in the Instructor Notes.
+
+# Once you've completed your investigation, create a post in the discussions that includes:
+#       1. any questions you answered, your observations, and summary statistics
+#       2. snippets of code that created the plots
+#       3. links to the images of your plots
+
+# You can save images by using the ggsave() command.
+# ggsave() will save the last plot created.
+# For example...
+#                  qplot(x = price, data = diamonds)
+#                  ggsave('priceHistogram.png')
+
+# ggsave currently recognises the extensions eps/ps, tex (pictex),
+# pdf, jpeg, tiff, png, bmp, svg and wmf (windows only).
+
+# Copy and paste all of the code that you used for
+# your investigation, and submit it when you are ready.
+# ====================================================================================
+
+
+install.packages("readxl")
+rm(list = ls())
+
+```{r}
+library(readxl)
+df <- read_excel("indicator Motor vehicles per 1000 population 20100824.xlsx", sheet = 1)
+
+dim(df)
+summary(df$`2002.0`)
+
+
+```
+
+
+# 3d plt of iris dataset
+install.packages("plot3D")
+library("plot3D")
+
+install.packages("scatterplot3d", dependencies = TRUE)
+library(scatterplot3d)
+
+```{r}
+data("iris")
+x <- sep.l <- iris$Sepal.Length
+y <- pet.l <- iris$Petal.Length
+z <- sep.w <- iris$Sepal.Width
+
+scatterplot3d(x = x, y = y, z = z, color = as.numeric(x))
+scatterplot3d(x = x, y = y, z = z, color = as.numeric(y))
+scatterplot3d(x = x, y = y, z = z, color = as.numeric(z))
+
+```
+
+install.packages('gridExtra')
+
+```{r}
+
+summary(df$`Motor vehicles (not 2-wheelers) per 1,000 population`)
+
+summary(df$`2003.0`)
+summary(df$`2004.0`)
+summary(df$`2005.0`)
+summary(df$`2006.0`)
+summary(df$`2007.0`)
+
+p1 <- qplot(data = df, x = df$`2002.0`)
+p2 <- qplot(data = df, x = df$`2003.0`)
+p3 <- qplot(data = df, x = df$`2004.0`)
+p4 <- qplot(data = df, x = df$`2005.0`)
+p5 <- qplot(data = df, x = df$`2006.0`)
+p6 <- qplot(data = df, x = df$`2007.0`)
+
+
+library(gridExtra)
+g <- grid.arrange(p1, p2, p3, p4, p5, p6, ncol=3)
+ggsave('graphs.png', g)
+
+x <- df$`Motor vehicles (not 2-wheelers) per 1,000 population`
+
+
+qplot(data = df, x = df$`2002.0`, color = factor(`Motor vehicles (not 2-wheelers) per 1,000 population`))
+ggsave('graphs1.png')
+
+qplot(data = df, x = df$`2003.0`, color = factor(`Motor vehicles (not 2-wheelers) per 1,000 population`))
+ggsave('graphs2.png')
+
+qplot(data = df, x = df$`2004.0`, color = factor(`Motor vehicles (not 2-wheelers) per 1,000 population`))
+ggsave('graphs3.png')
+
+qplot(data = df, x = df$`2005.0`, color = factor(`Motor vehicles (not 2-wheelers) per 1,000 population`))
+ggsave('graphs4.png')
+
+qplot(data = df, x = df$`2006.0`, color = factor(`Motor vehicles (not 2-wheelers) per 1,000 population`))
+ggsave('graphs5.png')
+
+qplot(data = df, x = df$`2007.0`, color = factor(`Motor vehicles (not 2-wheelers) per 1,000 population`))
+ggsave('graphs6.png')
+
+summary(df)
+
+
+s1 <- subset(df, df$`Motor vehicles (not 2-wheelers) per 1,000 population`=='United States', select = -`Motor vehicles (not 2-wheelers) per 1,000 population`)
+s2 <- subset(df, df$`Motor vehicles (not 2-wheelers) per 1,000 population`=='India', select = -`Motor vehicles (not 2-wheelers) per 1,000 population`)
+s3 <- s1 <- subset(df, df$`Motor vehicles (not 2-wheelers) per 1,000 population`=='China', select = -`Motor vehicles (not 2-wheelers) per 1,000 population`)
+
+scatterplot3d(x = s1, y = s2, z = s3, color = as.numeric(s1))
+
+```
+
+#extrcating letters begining with A
+```{r}
+x <- data.frame(words=c("apple","orange","coconut","apricot"),var=1:4)
+x[grep("^a", x$words),]
+```
+
+```{r}
+a<-df[grep("^a", df$`Motor vehicles (not 2-wheelers) per 1,000 population`),]
+
+```
+
+
+
+
+```{r}
+
+qplot(data = df, x = df$`2007.0`)
+
+qplot(data = df, x = df$`2002.0`) + geom_histogram()+
+  geom_freqpoly(aes(df$`2007.0`))
+ggsave('graph1.png')
+qplot(data = df, x = df$`2002.0`) + geom_histogram()
+ggsave('graph2.png')
+
+```
+
