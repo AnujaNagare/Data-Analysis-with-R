@@ -1,0 +1,206 @@
+# problem set Explore 2 variables
+
+# clear the workspace
+rm(list = ls())
+
+# Q1 : price vs x.
+```{r}
+# In this problem set, you'll continue
+# to explore the diamonds data set.
+
+# Your first task is to create a
+# scatterplot of price vs x.
+# using the ggplot syntax.
+
+# This assignment is not graded and
+# will be marked as correct when you submit.
+
+# ENTER YOUR CODE BELOW THIS LINE
+# ===========================================
+library(ggplot2)
+diamonds
+summary(diamonds)
+
+ggplot(aes(x=price, y=x), data = diamonds) + geom_line()
+
+```
+
+# Q2 : findings price vs x.
+in general as price increases x value increases
+but there are few outliers 
+
+# Q3 : Correlations
+```{r}
+
+cor.test(diamonds$price, diamonds$x)
+
+cor.test(diamonds$price, diamonds$y)
+
+cor.test(diamonds$price, diamonds$z)
+
+```
+
+# Q4 :  price vs depth
+```{r}
+# Create a simple scatter plot of price vs depth.
+
+# This assignment is not graded and
+# will be marked as correct when you submit.
+
+# ENTER YOUR CODE BELOW THIS LINE
+#==================================================
+
+ggplot(aes(x=price, y= depth), data=diamonds) + geom_point(alpha = 1)  + scale_x_continuous(breaks = 10)
+
+```
+
+
+# Q6 : typical depth range
+60-63
+
+
+# Q7 : cor b/w depth price
+```{r}
+
+cor.test(diamonds$depth, diamonds$price)
+
+```
+
+as the correlation is weak we can't use depth to predict the price of the diamond
+
+# Q9 : price vs carat
+```{r}
+
+# Create a scatterplot of price vs carat
+# and omit the top 1% of price and carat
+# values.
+
+# This assignment is not graded and
+# will be marked as correct when you submit.
+
+# ENTER YOUR CODE BELOW THIS LINE
+# ========================================
+ggplot(data = diamonds,aes(x = carat, y = price)) + 
+  xlim(0,quantile(diamonds$carat,0.99)) +
+  ylim(0,quantile(diamonds$price,0.99)) +
+  geom_point()
+
+
+
+```
+
+# Q10 : 
+```{r}
+# Create a scatterplot of price vs. volume (x * y * z).
+# This is a very rough approximation for a diamond's volume.
+
+# Create a new variable for volume in the diamonds data frame.
+# This will be useful in a later exercise.
+
+# Don't make any adjustments to the plot just yet.
+
+# This assignment is not graded and
+# will be marked as correct when you submit.
+
+# ENTER YOUR CODE BELOW THIS LINE
+# =================================================================
+diamonds$volume <- diamonds$x * diamonds$y * diamonds$z
+
+ggplot(aes(price, volume), data = diamonds) + geom_point()
+
+```
+
+```{r}
+install.packages(plyr)
+library(plyr)
+detach("package:plyr", unload=TRUE)
+
+count(diamonds$volume == 0)
+
+cor.test(diamonds$price, diamonds$volume)
+?with
+
+with(subset(diamonds , diamonds$volume!=0 & diamonds$volume < 800), cor.test(price, volume))
+
+```
+
+# Q12 : 
+```{r}
+# Subset the data to exclude diamonds with a volume
+# greater than or equal to 800. Also, exclude diamonds
+# with a volume of 0. Adjust the transparency of the
+# points and add a linear model to the plot. (See the
+# Instructor Notes or look up the documentation of
+# geom_smooth() for more details about smoothers.)
+
+# We encourage you to think about this next question and
+# to post your thoughts in the discussion section.
+
+# Do you think this would be a useful model to estimate
+# the price of diamonds? Why or why not?
+
+# This assignment is not graded and
+# will be marked as correct when you submit.
+
+# ENTER YOUR CODE BELOW THIS LINE
+# ========================================
+
+
+ggplot(aes(price, volume), data = subset(diamonds , diamonds$volume!=0 & diamonds$volume < 800)) + geom_point() + geom_smooth()
+
+
+```
+
+
+# Q13 : 
+```{r}
+# Use the function dplyr package
+# to create a new data frame containing
+# info on diamonds by clarity.
+
+# Name the data frame diamondsByClarity
+
+# The data frame should contain the following
+# variables in this order.
+
+#       (1) mean_price
+#       (2) median_price
+#       (3) min_price
+#       (4) max_price
+#       (5) n
+
+# where n is the number of diamonds in each
+# level of clarity.
+
+# This assignment WILL BE automatically
+# graded!
+
+# DO NOT ALTER THE NEXT THREE LINES OF CODE.
+# ======================================================
+suppressMessages(library(ggplot2))
+suppressMessages(library(dplyr))
+data(diamonds)
+
+# ENTER YOUR CODE BELOW THIS LINE
+# ======================================================
+
+
+```
+
+# Q14 : 
+```{r}
+
+
+```
+
+# Q15 : 
+```{r}
+
+
+```
+
+# Q16 : 
+```{r}
+
+
+```
