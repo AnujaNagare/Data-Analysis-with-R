@@ -183,24 +183,130 @@ data(diamonds)
 
 # ENTER YOUR CODE BELOW THIS LINE
 # ======================================================
+# age_groups <- group_by(pf, age_with_months)
+# pf.fc_by_age_months <- summarise(age_groups,
+#                          friend_count_mean = mean(friend_count),
+#                          friend_count_median = median(friend_count),
+#                          n = n())
 
+# pf.fc_by_age_months <- arrange(pf.fc_by_age_months, age_with_months)
+# head(pf.fc_by_age_months)
+
+# detach("package:plyr", unload=TRUE) 
+
+diamond_groups <- group_by(diamonds, clarity)
+
+diamonds.diamondsByClarity <- summarise(diamond_groups,
+                          mean_price = mean(price),
+                          median_price = median(price),
+                          min_price = min(price),
+                          max_price = max(price),
+                          n = n())
+
+diamondsByClarity <- arrange(diamonds.diamondsByClarity, clarity)
+head(diamondsByClarity)
 
 ```
 
 # Q14 : 
 ```{r}
 
+# We’ve created summary data frames with the mean price
+# by clarity and color. You can run the code in R to
+# verify what data is in the variables diamonds_mp_by_clarity
+# and diamonds_mp_by_color.
+
+# Your task is to write additional code to create two bar plots
+# on one output image using the grid.arrange() function from the package
+# gridExtra.
+
+# This assignment is not graded and
+# will be marked as correct when you submit.
+
+# See the Instructor Notes for more info on bar charts
+# and for a hint on this task.
+
+# DO NOT DELETE THE LINES OF CODE BELOW
+# ===================================================================
+data(diamonds)
+library(dplyr)
+
+diamonds_by_clarity <- group_by(diamonds, clarity)
+diamonds_mp_by_clarity <- summarise(diamonds_by_clarity, mean_price = mean(price))
+
+diamonds_by_color <- group_by(diamonds, color)
+diamonds_mp_by_color <- summarise(diamonds_by_color, mean_price = mean(price))
+
+# ENTER YOUR CODE BELOW THIS LINE
+# ===================================================================
+
+p1<-barplot(diamonds_mp_by_clarity$mean_price)
+p2<-barplot(diamonds_mp_by_color$mean_price)
+
+library(gridExtra)
+grid.arrange(p1,p2, ncol = 1)
+
+
+
+p1<-ggplot(aes(x=diamonds_mp_by_clarity$mean_price),data=diamonds_mp_by_clarity)  + geom_bar()
+p2<-ggplot(aes(x=diamonds_mp_by_color$mean_price),data= diamonds_mp_by_color) + geom_bar()
+
+library(gridExtra)
+grid.arrange(p1,p2, ncol = 1)
 
 ```
 
-# Q15 : 
-```{r}
 
-
-```
 
 # Q16 : 
 ```{r}
+# The Gapminder website contains over 500 data sets with information about
+# the world's population. Your task is to continue the investigation you did at the
+# end of Problem Set 3 or you can start fresh and choose a different
+# data set from Gapminder.
 
+# If you’re feeling adventurous or want to try some data munging see if you can
+# find a data set or scrape one from the web.
+
+# In your investigation, examine pairs of variable and create 2-5 plots that make
+# use of the techniques from Lesson 4.
+
+# You can find a link to the Gapminder website in the Instructor Notes.
+
+# Once you've completed your investigation, create a post in the discussions that includes:
+#       1. the variable(s) you investigated, your observations, and any summary statistics
+#       2. snippets of code that created the plots
+#       3. links to the images of your plots
+
+# Copy and paste all of the code that you used for
+# your investigation, and submit it when you are ready.
+# ====================================================================
+
+agcl <- read.csv('agriculture land.csv')
+
+View(agcl)
+
+summary(agcl)
+
+dim(agcl)
+
+ind1 <- as.data.frame(t(subset(agcl, agcl$Agricultural.land....of.land.area.=='India')))
+pak1 <- as.data.frame(t(subset(agcl, agcl$Agricultural.land....of.land.area.=='Pakistan')))
+bang1 <- as.data.frame(t(subset(agcl, agcl$Agricultural.land....of.land.area.=='Bangladesh')))
+china1 <- as.data.frame(t(subset(agcl, agcl$Agricultural.land....of.land.area.=='China')))
+sl1 <- as.data.frame(t(subset(agcl, agcl$Agricultural.land....of.land.area.=='Sri Lanka')))
+
+asia1 <- as.data.frame(c(ind1, pak1, bang1, china1, sl1))
+
+
+View(asia1)
+
+dim(asia1)
+
+library(ggplot2)
+
+ggplot(aes(x=asia1$X87, y=asia1$X147), data = asia1) + geom_point()
+
+ggplot(aes(x=agcl$X1960, y=agcl$Agricultural.land....of.land.area.),data=agcl) + geom_point() 
 
 ```
