@@ -558,6 +558,7 @@ Notes:
 rm(list = ls())
 
 ```{r Histograms Revisited}
+
 yo <- read.csv("yogurt.csv")
 str(yo)
 
@@ -565,7 +566,22 @@ yo$id <- factor(yo$id)
 str(yo)
 
 
+library(ggplot2)
 ggplot(aes(x=price),data=yo)+geom_histogram()
+ggplot(aes(x=price),data=yo)+geom_histogram(binwidth = 10)
+
+qplot(data = yo, x=price, fill = I('#F79420'))
+
+length(unique(yo$price))
+table(yo$price)
+
+transform(airquality, Ozone = -Ozone)
+transform(airquality, new = -Ozone, Temp = (Temp-32)/1.8)
+
+attach(airquality)
+transform(Ozone, logOzone = log(Ozone)) # marginally interesting ...
+detach(airquality)
+
 
 
 ```
@@ -576,6 +592,29 @@ ggplot(aes(x=price),data=yo)+geom_histogram()
 Notes:
 
 ```{r Number of Purchases}
+# Create a new variable called all.purchases,
+# which gives the total counts of yogurt for
+# each observation or household.
+
+# One way to do this is using the transform
+# function. You can look up the function transform
+# and run the examples of code at the bottom of the
+# documentation to figure out what it does.
+
+# The transform function produces a data frame
+# so if you use it then save the result to 'yo'!
+
+# OR you can figure out another way to create the
+# variable.
+
+# DO NOT ALTER THE CODE BELOW THIS LINE
+# ========================================================
+yo <- read.csv('yogurt.csv')
+
+# ENTER YOUR CODE BELOW THIS LINE
+# ========================================================
+?transform
+yo <- transform(yo, all.purchases = strawberry+blueberry+pina.colada+plain+mixed.berry)
 
 ```
 
@@ -585,6 +624,23 @@ Notes:
 Notes:
 
 ```{r Prices over Time}
+qplot(x=all.purchases, data = yo, binwidth =1, fill = I('#099DD9'))
+
+# Create a scatterplot of price vs time.
+
+# This will be an example of a time series plot.
+
+# Resolve overplotting issues by using
+# techniques you learned in Lesson 4.
+
+# What are some things that you notice?
+
+# ENTER YOUR CODE BELOW THIS LINE
+# ================================================
+
+ggplot(aes(x=price, y=time), data=yo) + geom_point()
+
+ggplot(aes(x=time, y=price), data = yo) + geom_jitter(alpha=1/4, shape=21, fill = I('#f79420'))
 
 ```
 
@@ -598,6 +654,24 @@ Notes:
 ### Looking at Samples of Households
 
 ```{r Looking at Sample of Households}
+# Set the seed for reproducible results
+set.seed(4230)
+sample.ids <- sample(yo$id ,16)
+
+ggplot(aes(x=time, y=price), data= subset(yo, id %in% sample.ids)) +
+         facet_wrap(~ id) +
+         geom_line() +
+         geom_point(aes(size = all.purchases), pch =1)
+
+
+
+set.seed(1000)
+sample.ids <- sample(yo$id ,16)
+
+ggplot(aes(x=time, y=price), data= subset(yo, id %in% sample.ids)) +
+         facet_wrap(~ id) +
+         geom_line() +
+         geom_point(aes(size = all.purchases), pch =1)
 
 ```
 
@@ -617,11 +691,59 @@ Notes:
 Notes:
 
 ***
+```{r}
+# install.packages("GGally")
+library(GGally)
+
+theme_set(theme_minimal(20))
+
+pf <- read.csv('pseudo_facebook.tsv', sep='\t')
+
+# set the seed for reproducible results
+set.seed(1836)
+pf_subset <- pf[, c(2:15)]
+pf_subset = pf[, c('age', 'dob_year', 'dob_month', 'gender', 'tenure')]
+pf_subset <- subset(pf, select = -c(userid, year_joined, year_joined_bucket))
+
+names(pf_subset)
+ggpairs(pf_subset[sample.int(nrow(pf_subset),1000),])
+
+pf1 <- pf_subset[sample.int(nrow(pf_subset),1000),]
+
+cov(pf1$friendships_initiated, pf1$friend_count)
+cov(pf1$age, pf1$mobile_likes)
+
+
+
+```
 
 ### Even More Variables
 Notes:
 
 ***
+```{r}
+
+nci <- read.csv('nci.tsv', sep='\t')
+
+#changing the colnames to produce a nicer plot
+#colnames(nci) <- c(1:64)
+
+# melt the data to long format
+library(reshape2)
+nci.long.samp <- melt(as.matrix(nci[1:200,]))
+names(nci.long.samp) <- c('gene', 'case', 'value')
+head(nci.long.samp)
+
+# make the heat map
+ggplot(aes(y=gene, x=case, fill=value), data=nci.long.samp) + geom_tile() +
+  scale_fill_gradient(colors=colorRampPalette(c('blue', 'red'))(100))
+
+
+       
+
+
+```
+
 
 ### Heat Maps
 Notes:
